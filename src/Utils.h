@@ -4,5 +4,5 @@
 #pragma once
 
 int precedence(char op);
-
+int factorial(int number);
 #endif
