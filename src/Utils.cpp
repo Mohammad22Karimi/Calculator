@@ -4,6 +4,7 @@
 #include <cctype>
 #include <cmath>
 #include <string>
+#include <cstring>
 
 int precedence(char op)
 {
@@ -31,34 +32,47 @@ string infixToPostfix(const string &infix)
 {
     Stack stack(infix.length()); // stack for holding operators
     string postfix = "";
+    string number = "";
     for (char c : infix)
     {
         if (isalnum(c)) // if the character is a number or variable
         {
-            postfix += c;
+            number += c;
         }
-        else if (c == '(')
+        else
         {
-            stack.push(c);
-        }
-        else if (c == ')')
-        {
-            while (!stack.isEmpty() && stack.peek() != '(')
+            if (!number.empty())
             {
-                postfix += stack.pop();
+                postfix += number + " ";
+                number = "";
             }
-            stack.pop(); // delete the (
-        }
-        else // if it was operator
-        {
-            while (!stack.isEmpty() && precedence(stack.peek()) >= precedence(c))
+            if (c == '(')
             {
-                postfix += stack.pop();
+                stack.push(c);
             }
-            stack.push(c);
+            else if (c == ')')
+            {
+                while (!stack.isEmpty() && stack.peek() != '(')
+                {
+                    postfix += stack.pop();
+                }
+                stack.pop(); // delete the (
+            }
+            else // if it was operator
+            {
+                while (!stack.isEmpty() && precedence(stack.peek()) >= precedence(c))
+                {
+                    postfix += stack.pop();
+                }
+                stack.push(c);
+            }
         }
     }
 
+    if (!number.empty())
+    {
+        postfix += number + " ";
+    }
     // add remaining operators on the stack to the postfix
     while (!stack.isEmpty())
     {
@@ -71,11 +85,20 @@ int evaluatePostfix(const string &postfix)
 {
     Stack stack(postfix.length());
 
+    string number = "";
     for (char c : postfix)
     {
         if (isdigit(c)) // if it's a number
         {
-            stack.push(c - '0');
+            number += c;
+        }
+        else if (isspace(c))
+        {
+            if (!number.empty())
+            {
+                stack.push(stoi(number));
+                number = "";
+            }
         }
         else if (c == '!')
         {
@@ -113,5 +136,5 @@ int evaluatePostfix(const string &postfix)
             }
         }
     }
-    return stack.peek();
+    return stack.pop();
 }
