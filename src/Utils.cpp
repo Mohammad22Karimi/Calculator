@@ -141,30 +141,29 @@ double evaluatePostfix(const string &postfix)
             {
                 double num1 = stack.pop();
                 double num2 = stack.pop();
-                switch (number)
+                if (number == '+')
                 {
-                case '+':
                     stack.push(num1 + num2);
-                    break;
-                case '-':
+                }
+                else if (nubmer == '-')
+                {
                     stack.push(num2 - num1);
-                    break;
-                case '*':
+                }
+                else if (number == '*')
+                {
                     stack.push(num1 * num2);
-                    break;
-                case '/':
+                }
+                else if (number == '/')
+                {
                     if (num1 == 0)
                     {
                         throw std::runtime_error("division by 0\n");
                     }
                     stack.push(num2 / num1);
-                    break;
-                case '^':
+                }
+                else if (number == '^')
+                {
                     stack.push(pow(num2, num1));
-                    break;
-
-                default:
-                    throw std::invalid_argument("unknown argument\n");
                 }
             }
         }
