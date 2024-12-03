@@ -25,14 +25,19 @@ int precedence(char op)
     return 0;
 }
 
-int factorial(int n)
+double factorial(double n)
 {
     if (n < 0)
         throw std::invalid_argument("negative number for factorail\n");
 
     if (n == 0 || n == 1)
         return 1;
-    return n * factorial(n - 1);
+    double result = 1;
+    for (int i = 2; i <= n; i++)
+    {
+        result *= i;
+    }
+    return result;
 }
 string infixToPostfix(const string &infix)
 {
@@ -119,7 +124,7 @@ double evaluatePostfix(const string &postfix)
     {
         if (isdigit(number[0]) || (number[0] == '-' && number.size() > 1))
         { // if it was a number
-            stack.push(stod(number));
+            stack.push(std::stod(number));
         }
         else if (number == "PI")
         {
@@ -167,7 +172,7 @@ double evaluatePostfix(const string &postfix)
                 }
                 else if (number == "^")
                 {
-                    stack.push(pow(num2, num1));
+                    stack.push(std::pow(num2, num1));
                 }
             }
         }

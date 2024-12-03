@@ -11,14 +11,14 @@ public:
 
     bool isEmpty();
     bool isFull();
-    void push(char value);
-    char pop();
-    char peek();
+    void push(double value);
+    double pop();
+    double peek();
 
 private:
     int top;
     int capacity;
-    char *arr;
+    double *arr;
 };
 
 #endif
