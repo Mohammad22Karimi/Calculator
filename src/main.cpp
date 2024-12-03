@@ -1,24 +1,26 @@
 #include <iostream>
+#include <string>
+#include <cctype> // for checking numbers and variables
 #include "Stack.cpp"
+#include "Utils.cpp"
+
 using namespace std;
 
 int main()
 {
-    // testing Stack:
-    Stack stack(5);
+    string in;
+    cin >> in;
     try
     {
-        stack.push('a');
-        stack.push('b');
-        stack.push('c');
+        string po = infixToPostfix(in);
+        cout << "postfix: " << po << endl;
 
-        cout << "top element: " << stack.peek() << endl;
-        stack.pop();
-        cout << "top element after pop: " << stack.peek() << endl;
+        int result = evaluatePostfix(po);
+        cout << "resutl: " << result << endl;
     }
     catch (const std::exception &e)
     {
-        cerr << e.what() << '\n';
+        std::cerr << e.what() << '\n';
     }
 
     return 0;
