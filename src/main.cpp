@@ -8,7 +8,7 @@
 
 using namespace std;
 
-double arr[52]; // a-z: 26 and A-Z: 26
+double arr[26]; // a-z: 26 and A-Z: 26
 
 int main()
 {
@@ -24,7 +24,7 @@ int main()
         size_t equalPosition = input.find('=');
         string variable = input.substr(0, equalPosition);
         string expression = input.substr(equalPosition + 1);
-
+        variable[0] = tolower(variable[0]);
         try
         {
             double value = evaluateExpression(expression);
@@ -34,7 +34,8 @@ int main()
         catch (const std::exception &e)
         {
             std::cerr << e.what() << '\n';
-            return 0;
+            n--;
+            continue;
         }
         n--;
     }
@@ -43,8 +44,19 @@ int main()
     {
         if (arr[i] != 0)
         {
-            cout << char('a' + i) << "=" << fixed << setprecision(4) << arr[i] << endl;
+            char letter = 'A' + i; // convert to capital letter
+            cout << letter << "=";
+
+            if (arr[i] == floor(arr[i]))
+            {
+                cout << fixed << setprecision(0) << arr[i] << endl;
+            }
+            else
+            {
+                cout << fixed << setprecision(4) << arr[i] << endl;
+            }
         }
     }
+
     return 0;
 }

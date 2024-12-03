@@ -10,7 +10,7 @@
 const double PI = 3.14159;
 const double EN = 2.71828;
 
-extern double arr[52]; // a-z: 26 and A-Z: 26
+extern double arr[26]; // a-z: 26 and A-Z: 26
 
 int precedence(char op)
 {
@@ -102,13 +102,13 @@ string infixToPostfix(const string &infix)
 
 int getArrayIndex(char v)
 {
+    if (v >= 'A' && v <= 'Z')
+    {
+        v = tolower(v); // convert to small letter
+    }
     if (v >= 'a' && v <= 'z')
     {
         return v - 'a';
-    }
-    if (v >= 'A' && v <= 'Z')
-    {
-        return v - 'A' + 26;
     }
     throw std::invalid_argument(std::string("invalid variable name: ") + v);
 }
