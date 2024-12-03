@@ -101,7 +101,7 @@ int getArrayIndex(char v)
     {
         return v - 'A' + 26;
     }
-    throw invalid_argument("invalid variable name");
+    throw std::invalid_argument("invalid variable name");
 }
 
 double evaluatePostfix(const string &postfix)
@@ -109,7 +109,7 @@ double evaluatePostfix(const string &postfix)
     Stack stack(postfix.length());
 
     string number;
-    stringstream numberStream(postfix);
+    std::stringstream numberStream(postfix);
 
     while (numberStream >> number)
     {
@@ -132,7 +132,7 @@ double evaluatePostfix(const string &postfix)
         }
         else
         { // operator
-            if (number == '!')
+            if (number == "!")
             {
                 double num = stack.pop();
                 stack.push(factorial(num));
@@ -141,19 +141,19 @@ double evaluatePostfix(const string &postfix)
             {
                 double num1 = stack.pop();
                 double num2 = stack.pop();
-                if (number == '+')
+                if (number == "+")
                 {
                     stack.push(num1 + num2);
                 }
-                else if (nubmer == '-')
+                else if (number == "-")
                 {
                     stack.push(num2 - num1);
                 }
-                else if (number == '*')
+                else if (number == "*")
                 {
                     stack.push(num1 * num2);
                 }
-                else if (number == '/')
+                else if (number == "/")
                 {
                     if (num1 == 0)
                     {
@@ -161,7 +161,7 @@ double evaluatePostfix(const string &postfix)
                     }
                     stack.push(num2 / num1);
                 }
-                else if (number == '^')
+                else if (number == "^")
                 {
                     stack.push(pow(num2, num1));
                 }
