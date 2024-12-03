@@ -8,5 +8,5 @@ using std::string;
 int precedence(char op);
 int factorial(int number);
 string infixToPostfix(const string &infix);
-int evaluatePostfix(const string &postfix);
+double evaluatePostfix(const string &postfix);
 #endif
