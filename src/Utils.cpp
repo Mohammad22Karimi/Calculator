@@ -81,7 +81,7 @@ string infixToPostfix(const string &infix)
     return postfix;
 }
 
-int evaluatePostfix(const string &postfix)
+double evaluatePostfix(const string &postfix)
 {
     Stack stack(postfix.length());
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cctype> // for checking numbers and variables
-#include <iomanop>
+#include <iomanip>
 #include <sstream>
 #include "Stack.cpp"
 #include "Utils.cpp"
@@ -11,7 +11,7 @@ using namespace std;
 const double PI = 3.14159;
 const double EN = 2.71828;
 
-double array[52]; // a-z: 26 and A-Z: 26
+double arr[52]; // a-z: 26 and A-Z: 26
 
 int getArrayIndex(char v)
 {
@@ -29,14 +29,14 @@ int main()
 {
     int n;
     cin >> n;
-    fill(array, array + 52; 0.0); // initialize variable with 0.0 by defult.
+    fill(arr, arr + 52, 0.0); // initialize variable with 0.0 by defult.
 
     while (n > 0)
     {
         string input;
         cin.ignore();
         getline(cin, input);
-        size_t equalPosition = find('=');
+        size_t equalPosition = input.find('=');
         string variable = input.substr(0, equalPosition);
         string expression = input.substr(equalPosition + 1);
 
@@ -44,7 +44,7 @@ int main()
         {
             double value = evaluatePostfix(expression);
             int index = getArrayIndex(variable[0]);
-            array[index] = value;
+            arr[index] = value;
         }
         catch (const std::exception &e)
         {
@@ -55,9 +55,9 @@ int main()
 
     for (int i = 0; i < 26; i++)
     {
-        if (array[i] != 0)
+        if (arr[i] != 0)
         {
-            cout << char('a' + i) << "=" << fixed << setprecision(4) << array[i] << endl;
+            cout << char('a' + i) << "=" << fixed << setprecision(4) << arr[i] << endl;
         }
     }
     return 0;
