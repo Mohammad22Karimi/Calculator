@@ -8,23 +8,8 @@
 
 using namespace std;
 
-const double PI = 3.14159;
-const double EN = 2.71828;
-
 double arr[52]; // a-z: 26 and A-Z: 26
 
-int getArrayIndex(char v)
-{
-    if (v >= 'a' && v <= 'z')
-    {
-        return v - 'a';
-    }
-    if (v >= 'A' && v <= 'Z')
-    {
-        return v - 'A' + 26;
-    }
-    throw invalid_argument("invalid variable name");
-}
 int main()
 {
     int n;
@@ -42,7 +27,7 @@ int main()
 
         try
         {
-            double value = evaluatePostfix(expression);
+            double value = evaluateExpression(expression);
             int index = getArrayIndex(variable[0]);
             arr[index] = value;
         }
@@ -51,6 +36,7 @@ int main()
             std::cerr << e.what() << '\n';
             return 0;
         }
+        n--;
     }
 
     for (int i = 0; i < 26; i++)

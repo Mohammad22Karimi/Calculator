@@ -5,6 +5,12 @@
 #include <cmath>
 #include <string>
 #include <cstring>
+#include <sstream>
+
+const double PI = 3.14159;
+const double EN = 2.71828;
+
+extern double arr[52]; // a-z: 26 and A-Z: 26
 
 int precedence(char op)
 {
@@ -35,7 +41,7 @@ string infixToPostfix(const string &infix)
     string number = "";
     for (char c : infix)
     {
-        if (isalnum(c)) // if the character is a number or variable
+        if (isdigit(c) || c == '.') // number of decimal
         {
             number += c;
         }
@@ -57,6 +63,10 @@ string infixToPostfix(const string &infix)
                     postfix += stack.pop();
                 }
                 stack.pop(); // delete the (
+            }
+            else if (isalpha(c)) // Variable
+            {
+                postfix += c;
             }
             else // if it was operator
             {
@@ -81,60 +91,89 @@ string infixToPostfix(const string &infix)
     return postfix;
 }
 
+int getArrayIndex(char v)
+{
+    if (v >= 'a' && v <= 'z')
+    {
+        return v - 'a';
+    }
+    if (v >= 'A' && v <= 'Z')
+    {
+        return v - 'A' + 26;
+    }
+    throw invalid_argument("invalid variable name");
+}
+
 double evaluatePostfix(const string &postfix)
 {
     Stack stack(postfix.length());
 
-    string number = "";
-    for (char c : postfix)
+    string number;
+    stringstream numberStream(postfix);
+
+    while (numberStream >> number)
     {
-        if (isdigit(c)) // if it's a number
-        {
-            number += c;
+        if (isdigit(number[0]) || number[0] == '-' && number.size() > 1)
+        { // if it was a number
+            stack.push(stod(number));
         }
-        else if (isspace(c))
+        else if (number == "PI")
         {
-            if (!number.empty())
-            {
-                stack.push(stoi(number));
-                number = "";
-            }
+            stack.push(PI);
         }
-        else if (c == '!')
+        else if (number == "EN")
         {
-            int num = stack.pop();
-            stack.push(factorial(num));
+            stack.push(EN);
+        }
+        else if (isalpha(number[0]))
+        {
+            int index = getArrayIndex(number[0]);
+            stack.push(arr[index]);
         }
         else
-        {
-            float num1 = stack.pop();
-            float num2 = stack.pop();
-            switch (c)
+        { // operator
+            if (number == '!')
             {
-            case '+':
-                stack.push(num1 + num2);
-                break;
-            case '-':
-                stack.push(num2 - num1);
-                break;
-            case '*':
-                stack.push(num1 * num2);
-                break;
-            case '/':
-                if (num1 == 0)
+                double num = stack.pop();
+                stack.push(factorial(num));
+            }
+            else
+            {
+                double num1 = stack.pop();
+                double num2 = stack.pop();
+                switch (number)
                 {
-                    throw std::runtime_error("division by 0\n");
-                }
-                stack.push(num2 / num1);
-                break;
-            case '^':
-                stack.push(pow(num2, num1));
-                break;
+                case '+':
+                    stack.push(num1 + num2);
+                    break;
+                case '-':
+                    stack.push(num2 - num1);
+                    break;
+                case '*':
+                    stack.push(num1 * num2);
+                    break;
+                case '/':
+                    if (num1 == 0)
+                    {
+                        throw std::runtime_error("division by 0\n");
+                    }
+                    stack.push(num2 / num1);
+                    break;
+                case '^':
+                    stack.push(pow(num2, num1));
+                    break;
 
-            default:
-                throw std::invalid_argument("unknown argument\n");
+                default:
+                    throw std::invalid_argument("unknown argument\n");
+                }
             }
         }
     }
     return stack.pop();
+}
+
+double evaluateExpression(const string &expression)
+{
+    string postfix = infixToPostfix(expression); // convert to postfix
+    return evaluatePostfix(postfix);
 }
