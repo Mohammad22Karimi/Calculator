@@ -61,18 +61,21 @@ string infixToPostfix(const string &infix)
                 while (!stack.isEmpty() && stack.peek() != '(')
                 {
                     postfix += stack.pop();
+                    postfix += " ";
                 }
                 stack.pop(); // delete the (
             }
             else if (isalpha(c)) // Variable
             {
                 postfix += c;
+                postfix += " ";
             }
             else // if it was operator
             {
                 while (!stack.isEmpty() && precedence(stack.peek()) >= precedence(c))
                 {
                     postfix += stack.pop();
+                    postfix += " ";
                 }
                 stack.push(c);
             }
@@ -87,6 +90,7 @@ string infixToPostfix(const string &infix)
     while (!stack.isEmpty())
     {
         postfix += stack.pop();
+        postfix += " ";
     }
     return postfix;
 }
@@ -101,7 +105,7 @@ int getArrayIndex(char v)
     {
         return v - 'A' + 26;
     }
-    throw std::invalid_argument("invalid variable name");
+    throw std::invalid_argument(std::string("invalid variable name: ") + v);
 }
 
 double evaluatePostfix(const string &postfix)
@@ -113,7 +117,7 @@ double evaluatePostfix(const string &postfix)
 
     while (numberStream >> number)
     {
-        if (isdigit(number[0]) || number[0] == '-' && number.size() > 1)
+        if (isdigit(number[0]) || (number[0] == '-' && number.size() > 1))
         { // if it was a number
             stack.push(stod(number));
         }
@@ -167,6 +171,10 @@ double evaluatePostfix(const string &postfix)
                 }
             }
         }
+    }
+    if (stack.isEmpty())
+    {
+        throw std::runtime_error("invalid expression\n");
     }
     return stack.pop();
 }
