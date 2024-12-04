@@ -81,12 +81,21 @@ int main()
             char letter = 'A' + i; // Convert to uppercase letter
             cout << letter << "=";
             ostringstream oss;
-            oss << fixed << setprecision(10) << arr[i];
+            oss << fixed << setprecision(12) << arr[i];
             string ns = oss.str();
             size_t dp = ns.find('.');
             if (dp != string::npos && dp + 5 <= ns.length())
             {
-                if (ns[dp + 6] != '0')
+                bool b = false;
+                for (int i = dp + 6; i < ns.length() - 2; i++)
+                {
+                    if (ns[i] != '0')
+                    {
+                        b = true;
+                        break;
+                    }
+                }
+                if (b == true)
                 {
                     string truncatedStr = ns.substr(0, dp + 6);
                     string truncateStr2 = removeTrailingZeros(stod(truncatedStr));
