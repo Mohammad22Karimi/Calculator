@@ -44,9 +44,27 @@ string infixToPostfix(const string &infix)
     Stack stack(infix.length()); // stack for holding operators
     string postfix = "";
     string number = "";
-    for (char c : infix)
+    for (size_t i = 0; i < infix.length(); i++)
     {
-        if (isdigit(c) || c == '.') // number of decimal
+        char c = infix[i];
+        if (isalpha(c))
+        {
+            number += c;
+
+            if (i + 1 == infix.length() || !isalpha(infix[i + 1]))
+            {
+                if (number == "PI" || number == "EN")
+                {
+                    postfix += number + " ";
+                }
+                else
+                {
+                    postfix += number + " ";
+                }
+                number = "";
+            }
+        }
+        else if (isdigit(c) || c == '.') // number of decimal
         {
             number += c;
         }
@@ -69,11 +87,6 @@ string infixToPostfix(const string &infix)
                     postfix += " ";
                 }
                 stack.pop(); // delete the (
-            }
-            else if (isalpha(c)) // Variable
-            {
-                postfix += c;
-                postfix += " ";
             }
             else // if it was operator
             {

@@ -5,6 +5,7 @@
 #include <sstream>
 #include "Stack.cpp"
 #include "Utils.cpp"
+#include <cmath>
 
 using namespace std;
 
