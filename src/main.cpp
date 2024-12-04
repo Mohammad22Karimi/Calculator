@@ -11,16 +11,18 @@
 using namespace std;
 
 double arr[26]; // a-z: 26 and A-Z: 26
+
 string removeTrailingZeros(double number)
 {
     ostringstream oss;
-    oss << fixed << setprecision(4) << number;
+    oss << fixed << setprecision(10) << number;
     string str = oss.str();
 
     // find the position of the decimal point
     size_t decimalPointPos = str.find('.');
     if (decimalPointPos != string::npos)
-    { // Find the position of the last non-zero character after the decimal point
+    {
+        // Find the position of the last non-zero character after the decimal point
         size_t lastNonZeroPos = str.find_last_not_of('0');
         if (lastNonZeroPos != string::npos && lastNonZeroPos > decimalPointPos)
         {
@@ -34,11 +36,12 @@ string removeTrailingZeros(double number)
     }
     return str;
 }
+
 int main()
 {
     int n;
     cin >> n;
-    fill(arr, arr + 52, 0.0); // initialize variable with 0.0 by defult.
+    fill(arr, arr + 26, 0.0); // initialize variable with 0.0 by default.
 
     while (n > 0)
     {
@@ -59,7 +62,7 @@ int main()
         try
         {
             double value = evaluateExpression(expression);
-            int index = getArrayIndex(variable[0]);
+            int index = variable[0] - 'a'; // Convert variable to array index
             arr[index] = value;
         }
         catch (const std::exception &e)
@@ -75,11 +78,31 @@ int main()
     {
         if (arr[i] != 0)
         {
-            char letter = 'A' + i; // convert to capital letter
+            char letter = 'A' + i; // Convert to uppercase letter
             cout << letter << "=";
-            double number = arr[i];
-            string result = removeTrailingZeros(number); //
-            cout << fixed << result << endl;
+            ostringstream oss;
+            oss << fixed << setprecision(10) << arr[i];
+            string ns = oss.str();
+            size_t dp = ns.find('.');
+            if (dp != string::npos && dp + 5 <= ns.length())
+            {
+                if (ns[dp + 6] != '0')
+                {
+                    string truncatedStr = ns.substr(0, dp + 6);
+                    string truncateStr2 = removeTrailingZeros(stod(truncatedStr));
+                    truncateStr2 = truncateStr2.substr(0, dp + 5);
+                    cout << truncateStr2 << endl;
+                }
+                else
+                {
+                    string truncatedStr = ns.substr(0, dp + 5);
+                    cout << removeTrailingZeros(stod(truncatedStr)) << endl;
+                }
+            }
+            else
+            {
+                cout << removeTrailingZeros(arr[i]) << endl;
+            }
         }
     }
 
