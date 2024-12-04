@@ -6,11 +6,34 @@
 #include "Stack.cpp"
 #include "Utils.cpp"
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
 double arr[26]; // a-z: 26 and A-Z: 26
+string removeTrailingZeros(double number)
+{
+    ostringstream oss;
+    oss << number;
+    string str = oss.str();
 
+    // find the position of the decimal point
+    size_t decimalPointPos = str.find('.');
+    if (decimalPointPos != string::npos)
+    { // Find the position of the last non-zero character after the decimal point
+        size_t lastNonZeroPos = str.find_last_not_of('0');
+        if (lastNonZeroPos != string::npos && lastNonZeroPos > decimalPointPos)
+        {
+            str.erase(lastNonZeroPos + 1);
+        }
+        else
+        {
+            // If all characters after the decimal point are zeros, remove the decimal point as well
+            str.erase(decimalPointPos);
+        }
+    }
+    return str;
+}
 int main()
 {
     int n;
@@ -54,15 +77,9 @@ int main()
         {
             char letter = 'A' + i; // convert to capital letter
             cout << letter << "=";
-
-            if (arr[i] == floor(arr[i]))
-            {
-                cout << fixed << setprecision(0) << arr[i] << endl;
-            }
-            else
-            {
-                cout << fixed << setprecision(4) << arr[i] << endl;
-            }
+            double number = arr[i];
+            string result = removeTrailingZeros(number); //
+            cout << result << endl;
         }
     }
 
