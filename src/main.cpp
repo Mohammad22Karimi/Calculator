@@ -14,7 +14,7 @@ double arr[26]; // a-z: 26 and A-Z: 26
 string removeTrailingZeros(double number)
 {
     ostringstream oss;
-    oss << number;
+    oss << fixed << setprecision(4) << number;
     string str = oss.str();
 
     // find the position of the decimal point
@@ -79,7 +79,7 @@ int main()
             cout << letter << "=";
             double number = arr[i];
             string result = removeTrailingZeros(number); //
-            cout << result << endl;
+            cout << fixed << result << endl;
         }
     }
 
