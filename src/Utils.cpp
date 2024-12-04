@@ -5,6 +5,12 @@
 #include <cmath>
 #include <string>
 #include <cstring>
+#include <sstream>
+
+const double PI = 3.14159;
+const double EN = 2.71828;
+
+extern double arr[26]; // a-z: 26 and A-Z: 26
 
 int precedence(char op)
 {
@@ -19,23 +25,46 @@ int precedence(char op)
     return 0;
 }
 
-int factorial(int n)
+double factorial(double n)
 {
     if (n < 0)
         throw std::invalid_argument("negative number for factorail\n");
 
     if (n == 0 || n == 1)
         return 1;
-    return n * factorial(n - 1);
+    double result = 1;
+    for (int i = 2; i <= n; i++)
+    {
+        result *= i;
+    }
+    return result;
 }
 string infixToPostfix(const string &infix)
 {
     Stack stack(infix.length()); // stack for holding operators
     string postfix = "";
     string number = "";
-    for (char c : infix)
+    for (size_t i = 0; i < infix.length(); i++)
     {
-        if (isalnum(c)) // if the character is a number or variable
+        char c = infix[i];
+        if (isalpha(c))
+        {
+            number += c;
+
+            if (i + 1 == infix.length() || !isalpha(infix[i + 1]))
+            {
+                if (number == "PI" || number == "EN")
+                {
+                    postfix += number + " ";
+                }
+                else
+                {
+                    postfix += number + " ";
+                }
+                number = "";
+            }
+        }
+        else if (isdigit(c) || c == '.') // number of decimal
         {
             number += c;
         }
@@ -55,6 +84,7 @@ string infixToPostfix(const string &infix)
                 while (!stack.isEmpty() && stack.peek() != '(')
                 {
                     postfix += stack.pop();
+                    postfix += " ";
                 }
                 stack.pop(); // delete the (
             }
@@ -63,6 +93,7 @@ string infixToPostfix(const string &infix)
                 while (!stack.isEmpty() && precedence(stack.peek()) >= precedence(c))
                 {
                     postfix += stack.pop();
+                    postfix += " ";
                 }
                 stack.push(c);
             }
@@ -77,64 +108,97 @@ string infixToPostfix(const string &infix)
     while (!stack.isEmpty())
     {
         postfix += stack.pop();
+        postfix += " ";
     }
     return postfix;
 }
 
-int evaluatePostfix(const string &postfix)
+int getArrayIndex(char v)
+{
+    if (v >= 'A' && v <= 'Z')
+    {
+        v = tolower(v); // convert to small letter
+    }
+    if (v >= 'a' && v <= 'z')
+    {
+        return v - 'a';
+    }
+    throw std::invalid_argument(std::string("invalid variable name: ") + v);
+}
+
+double evaluatePostfix(const string &postfix)
 {
     Stack stack(postfix.length());
 
-    string number = "";
-    for (char c : postfix)
+    string number;
+    std::stringstream numberStream(postfix);
+
+    while (numberStream >> number)
     {
-        if (isdigit(c)) // if it's a number
-        {
-            number += c;
+        if (isdigit(number[0]) || (number[0] == '-' && number.size() > 1))
+        { // if it was a number
+            stack.push(std::stod(number));
         }
-        else if (isspace(c))
+        else if (number == "PI")
         {
-            if (!number.empty())
-            {
-                stack.push(stoi(number));
-                number = "";
-            }
+            stack.push(PI);
         }
-        else if (c == '!')
+        else if (number == "EN")
         {
-            int num = stack.pop();
-            stack.push(factorial(num));
+            stack.push(EN);
+        }
+        else if (isalpha(number[0]))
+        {
+            int index = getArrayIndex(number[0]);
+            stack.push(arr[index]);
         }
         else
-        {
-            float num1 = stack.pop();
-            float num2 = stack.pop();
-            switch (c)
+        { // operator
+            if (number == "!")
             {
-            case '+':
-                stack.push(num1 + num2);
-                break;
-            case '-':
-                stack.push(num2 - num1);
-                break;
-            case '*':
-                stack.push(num1 * num2);
-                break;
-            case '/':
-                if (num1 == 0)
+                double num = stack.pop();
+                stack.push(factorial(num));
+            }
+            else
+            {
+                double num1 = stack.pop();
+                double num2 = stack.pop();
+                if (number == "+")
                 {
-                    throw std::runtime_error("division by 0\n");
+                    stack.push(num1 + num2);
                 }
-                stack.push(num2 / num1);
-                break;
-            case '^':
-                stack.push(pow(num2, num1));
-                break;
-
-            default:
-                throw std::invalid_argument("unknown argument\n");
+                else if (number == "-")
+                {
+                    stack.push(num2 - num1);
+                }
+                else if (number == "*")
+                {
+                    stack.push(num1 * num2);
+                }
+                else if (number == "/")
+                {
+                    if (num1 == 0)
+                    {
+                        throw std::runtime_error("division by 0\n");
+                    }
+                    stack.push(num2 / num1);
+                }
+                else if (number == "^")
+                {
+                    stack.push(std::pow(num2, num1));
+                }
             }
         }
     }
+    if (stack.isEmpty())
+    {
+        throw std::runtime_error("invalid expression\n");
+    }
     return stack.pop();
+}
+
+double evaluateExpression(const string &expression)
+{
+    string postfix = infixToPostfix(expression); // convert to postfix
+    return evaluatePostfix(postfix);
 }

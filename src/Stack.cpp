@@ -5,7 +5,7 @@ Stack::Stack(int size)
 {
     top = -1;
     capacity = size;
-    arr = new char[capacity];
+    arr = new double[capacity];
 }
 
 Stack::~Stack()
@@ -22,7 +22,7 @@ bool Stack::isFull()
     return top == capacity - 1;
 }
 
-void Stack::push(char value)
+void Stack::push(double value)
 {
     if (isFull())
     {
@@ -31,7 +31,7 @@ void Stack::push(char value)
     arr[++top] = value;
 }
 
-char Stack::pop()
+double Stack::pop()
 {
     if (isEmpty())
     {
@@ -39,7 +39,7 @@ char Stack::pop()
     }
     return arr[top--];
 }
-char Stack::peek()
+double Stack::peek()
 {
     if (isEmpty())
     {
