@@ -23,6 +23,13 @@ int main()
         cin.ignore();
         getline(cin, input);
         size_t equalPosition = input.find('=');
+        if (equalPosition == string::npos)
+        {
+            double result = evaluateExpression(input);
+            cout << result << endl;
+            n--;
+            continue;
+        }
         string variable = input.substr(0, equalPosition);
         string expression = input.substr(equalPosition + 1);
         variable[0] = tolower(variable[0]);
