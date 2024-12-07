@@ -44,6 +44,35 @@ void build_dependencies(vector<Equation> &equations)
         }
     }
 }
+vector<int> topologicalSort()
+{
+    Queue q(MAX_VARIABLE);
+    vector<int> sortedOrder;
+    // Add variables with zero entry level to the queue
+    for (int i = 0; i < MAX_VARIABLE; i++)
+    {
+        if (inDegree[i] == 0)
+        {
+            q.enqueue(i);
+        }
+    }
+    while (!q.isEmpty())
+    {
+        int current = q.dequeue();
+        sortedOrder.push_back(current);
+
+        // Reduce the input degree of dependent variables
+        for (int neighbor : dependencies[current])
+        {
+            inDegree[neighbor]--;
+            if (inDegree[neighbor] == 0)
+            {
+                q.enqueue(neighbor);
+            }
+        }
+    }
+    return sortedOrder;
+}
 string removeTrailingZeros(double number)
 {
     ostringstream oss;
