@@ -73,6 +73,33 @@ vector<int> topologicalSort()
     }
     return sortedOrder;
 }
+void evaluateSortedEquations(vector<Equation> &equations, vector<int> &sortedOrder)
+{ // Solve the variable of each equation
+    for (int variableIndex : sortedOrder)
+    {
+        char variableName = variableIndex + 'a';
+        string expression;
+        // Find the expression related to the variable
+        for (auto &eq : equations)
+        {
+            if (eq.variable == variableIndex)
+            {
+                expression = eq.expression;
+                break;
+            }
+        }
+        try
+        {
+            double value = evaluateExpression(expression);
+            arr[variableIndex] = value;
+        }
+        catch (const std::exception &e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+    }
+    // Calculate the value of the expression
+}
 string removeTrailingZeros(double number)
 {
     ostringstream oss;
