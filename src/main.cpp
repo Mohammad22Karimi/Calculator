@@ -7,11 +7,43 @@
 #include "Utils.cpp"
 #include <cmath>
 #include <algorithm>
+#include "Queue.cpp"
+#include <vector>
 
 using namespace std;
 
 double arr[26]; // a-z: 26 and A-Z: 26
+const int MAX_VARIABLE = 26;
+int inDegree[MAX_VARIABLE];             // تعداد ورودی برای هر متغیر
+vector<int> dependencies[MAX_VARIABLE]; // وابستگی ها
 
+struct Equation
+{
+    int variable;      // variable left side
+    string expression; // expression right side
+};
+
+void build_dependencies(vector<Equation> &equations)
+{
+    fill(inDegree, inDegree + MAX_VARIABLE, 0);
+    for (int i = 0; i < MAX_VARIABLE; ++i)
+    {
+        dependencies[i].clear();
+    }
+    for (auto &eq : equations)
+    {
+        int ch = eq.variable - 'a';
+        for (char c : eq.expression)
+        {
+            if (isalpha(c))
+            {
+                int ch2 = tolower(c) - 'a';
+                dependencies[ch2].push_back(ch);
+                inDegree[ch]++;
+            }
+        }
+    }
+}
 string removeTrailingZeros(double number)
 {
     ostringstream oss;
