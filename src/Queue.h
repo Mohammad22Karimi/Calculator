@@ -6,7 +6,7 @@
 class Queue
 {
 public:
-    Queue(int capacity);
+    Queue(int c);
     ~Queue();
     bool isEmpty();
     bool isFull();

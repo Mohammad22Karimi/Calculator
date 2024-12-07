@@ -1,10 +1,10 @@
 #include "Queue.h"
 #include <iostream>
 using namespace std;
-Queue::Queue(int capacity)
+Queue::Queue(int c)
 {
-    data = new int[capacity];
-    capacity = capacity;
+    data = new int[c];
+    capacity = c;
     front = -1;
     rear = -1;
     size = 0;
@@ -17,12 +17,12 @@ Queue::~Queue()
 
 bool Queue::isEmpty()
 {
-    return size = 0;
+    return size == 0;
 }
 
 bool Queue::isFull()
 {
-    return size = capacity;
+    return size == capacity;
 }
 
 void Queue::enqueue(int value)
@@ -42,7 +42,7 @@ int Queue::dequeue()
     if (isEmpty())
     {
         cerr << "Queue is empty." << endl;
-        return;
+        return -1;
     }
     int value = data[front];
     front = (front + 1) % capacity;
@@ -55,7 +55,7 @@ int Queue::frontElement()
     if (isEmpty())
     {
         cerr << "Queue is empty." << endl;
-        return;
+        return -1;
     }
     return data[front];
 }

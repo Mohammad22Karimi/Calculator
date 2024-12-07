@@ -5,9 +5,9 @@
 #include <sstream>
 #include "Stack.cpp"
 #include "Utils.cpp"
+#include "Queue.cpp"
 #include <cmath>
 #include <algorithm>
-#include "Queue.cpp"
 #include <vector>
 
 using namespace std;
@@ -124,18 +124,12 @@ string removeTrailingZeros(double number)
     }
     return str;
 }
-
-int main()
+void readEquation(vector<Equation> &equations, int n)
 {
-    int n;
-    cin >> n;
-    fill(arr, arr + 26, 0.0); // initialize variable with 0.0 by default.
-
     while (n > 0)
     {
         string input;
-        cin.ignore();
-        getline(cin, input);
+        cin >> input;
         size_t equalPosition = input.find('=');
         if (equalPosition == string::npos)
         {
@@ -146,22 +140,40 @@ int main()
         }
         string variable = input.substr(0, equalPosition);
         string expression = input.substr(equalPosition + 1);
-        variable[0] = tolower(variable[0]);
-        try
+        if (variable.length() != 1 || !isalpha(variable[0]))
         {
-            double value = evaluateExpression(expression);
-            int index = variable[0] - 'a'; // Convert variable to array index
-            arr[index] = value;
-        }
-        catch (const std::exception &e)
-        {
-            std::cerr << e.what() << '\n';
+            cerr << "Invalid variable name." << endl;
             n--;
             continue;
         }
+        variable[0] = tolower(variable[0]);
+        int varIndex = variable[0] - 'a';
+        Equation E;
+        E.variable = varIndex;
+        E.expression = expression;
+        equations.push_back(E);
         n--;
     }
+}
+int main()
+{
+    // cin.ignore(); // consume newline character
+    int n;
+    cin >> n;
+    Queue q(3);
+    q.enqueue(1);
+    q.enqueue(2);
+    q.enqueue(3);
+    cout << q.dequeue() << endl;
+    cout << q.dequeue() << endl;
+    cout << q.dequeue() << endl;
 
+    fill(arr, arr + 26, 0.0); // initialize variable with 0.0 by default.
+    vector<Equation> equation;
+    readEquation(equation, n);
+    build_dependencies(equation);
+    vector<int> sortedOrder = topologicalSort();
+    evaluateSortedEquations(equation, sortedOrder);
     for (int i = 0; i < 26; i++)
     {
         if (arr[i] != 0)
