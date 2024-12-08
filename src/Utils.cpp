@@ -179,7 +179,7 @@ double evaluatePostfix(const string &postfix)
                 {
                     if (num1 == 0)
                     {
-                        throw std::runtime_error("division by 0\n");
+                        throw std::runtime_error("Outp Arithmetic Error");
                     }
                     stack.push(num2 / num1);
                 }

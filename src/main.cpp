@@ -32,7 +32,7 @@ void build_dependencies(vector<Equation> &equations)
     }
     for (auto &eq : equations)
     {
-        int ch = eq.variable - 'a';
+        int ch = eq.variable;
         for (char c : eq.expression)
         {
             if (isalpha(c))
