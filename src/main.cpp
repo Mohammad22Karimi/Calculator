@@ -79,19 +79,24 @@ void evaluateSortedEquations(vector<Equation> &equations, vector<int> &sortedOrd
     {
         char variableName = variableIndex + 'a';
         string expression;
+        bool found = false;
         // Find the expression related to the variable
         for (auto &eq : equations)
         {
             if (eq.variable == variableIndex)
             {
                 expression = eq.expression;
+                found = true;
                 break;
             }
         }
         try
         {
-            double value = evaluateExpression(expression);
-            arr[variableIndex] = value;
+            if (found)
+            {
+                double value = evaluateExpression(expression);
+                arr[variableIndex] = value;
+            }
         }
         catch (const std::exception &e)
         {
@@ -160,13 +165,6 @@ int main()
     // cin.ignore(); // consume newline character
     int n;
     cin >> n;
-    Queue q(3);
-    q.enqueue(1);
-    q.enqueue(2);
-    q.enqueue(3);
-    cout << q.dequeue() << endl;
-    cout << q.dequeue() << endl;
-    cout << q.dequeue() << endl;
 
     fill(arr, arr + 26, 0.0); // initialize variable with 0.0 by default.
     vector<Equation> equation;

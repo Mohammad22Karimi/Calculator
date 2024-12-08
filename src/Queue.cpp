@@ -5,7 +5,7 @@ Queue::Queue(int c)
 {
     data = new int[c];
     capacity = c;
-    front = -1;
+    front = 0;
     rear = -1;
     size = 0;
 }
