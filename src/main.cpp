@@ -12,6 +12,7 @@
 
 using namespace std;
 
+bool isAssigned[26] = {false};
 double arr[26]; // a-z: 26 and A-Z: 26
 const int MAX_VARIABLE = 26;
 int inDegree[MAX_VARIABLE];             // تعداد ورودی برای هر متغیر
@@ -48,6 +49,7 @@ vector<int> topologicalSort()
 {
     Queue q(MAX_VARIABLE);
     vector<int> sortedOrder;
+    vector<bool> visited(MAX_VARIABLE, false);
     // Add variables with zero entry level to the queue
     for (int i = 0; i < MAX_VARIABLE; i++)
     {
@@ -60,7 +62,7 @@ vector<int> topologicalSort()
     {
         int current = q.dequeue();
         sortedOrder.push_back(current);
-
+        visited[current] = true;
         // Reduce the input degree of dependent variables
         for (int neighbor : dependencies[current])
         {
@@ -69,6 +71,14 @@ vector<int> topologicalSort()
             {
                 q.enqueue(neighbor);
             }
+        }
+    }
+    for (int i = 0; i < MAX_VARIABLE; i++)
+    {
+        if (!visited[i] && inDegree[i] > 0)
+        {
+            cerr << "Circular Dependency" << endl;
+            exit(1);
         }
     }
     return sortedOrder;
@@ -96,11 +106,13 @@ void evaluateSortedEquations(vector<Equation> &equations, vector<int> &sortedOrd
             {
                 double value = evaluateExpression(expression);
                 arr[variableIndex] = value;
+                isAssigned[variableIndex] = true;
             }
         }
         catch (const std::exception &e)
         {
             std::cerr << e.what() << '\n';
+            exit(1);
         }
     }
     // Calculate the value of the expression
@@ -129,12 +141,55 @@ string removeTrailingZeros(double number)
     }
     return str;
 }
+void checkError(const string &input)
+{
+    // checking =
+    size_t equalPos = input.find('=');
+    if (equalPos == string::npos)
+    {
+        cerr << "Invalid Format" << endl;
+        exit(1);
+    }
+    string v = input.substr(0, equalPos);
+    string e = input.substr(equalPos + 1);
+    if (v.length() != 1 || !isalpha(v[0]))
+    {
+        cerr << "Invalid Format" << endl;
+        exit(1);
+    }
+    int open = 0, close = 0;
+    for (char c : e)
+    {
+        if (c == '(')
+            open++;
+
+        if (c == ')')
+            close++;
+
+        if (close > open)
+        {
+            cerr << "Invalid Format" << endl;
+            exit(1);
+        }
+    }
+    if (open != close)
+    {
+        cerr << "Invalid Format" << endl;
+        exit(1);
+    }
+}
 void readEquation(vector<Equation> &equations, int n)
 {
     while (n > 0)
     {
         string input;
         cin >> input;
+        if (input.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/^!=().") != string::npos)
+        {
+            cerr << "Invalid Input" << endl;
+            exit(1);
+        }
+        checkError(input);
         size_t equalPosition = input.find('=');
         if (equalPosition == string::npos)
         {
@@ -145,14 +200,22 @@ void readEquation(vector<Equation> &equations, int n)
         }
         string variable = input.substr(0, equalPosition);
         string expression = input.substr(equalPosition + 1);
-        if (variable.length() != 1 || !isalpha(variable[0]))
-        {
-            cerr << "Invalid variable name." << endl;
-            n--;
-            continue;
-        }
+
         variable[0] = tolower(variable[0]);
         int varIndex = variable[0] - 'a';
+        if (isAssigned[varIndex])
+        {
+            for (auto &eq : equations)
+            {
+                if (eq.variable = varIndex)
+                {
+                    cerr << "Inconsistency" << endl;
+                    exit(1);
+                }
+            }
+        }
+        isAssigned[varIndex] = true;
+
         Equation E;
         E.variable = varIndex;
         E.expression = expression;
