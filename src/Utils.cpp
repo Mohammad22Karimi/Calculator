@@ -75,6 +75,11 @@ string infixToPostfix(const string &infix)
                 postfix += number + " ";
                 number = "";
             }
+            if (c == '-' && (i == 0 || infix[i - 1] == '('))
+            {
+                // (e.g., -4 or (-4))
+                number += c;
+            }
             if (c == '(')
             {
                 stack.push(c);
@@ -179,12 +184,16 @@ double evaluatePostfix(const string &postfix)
                 {
                     if (num1 == 0)
                     {
-                        throw std::runtime_error("division by 0\n");
+                        throw std::runtime_error("Outp Arithmetic Error");
                     }
                     stack.push(num2 / num1);
                 }
                 else if (number == "^")
                 {
+                    if (num2 < 0 && num1 != 0)
+                    {
+                        throw std::runtime_error("Outp Arithmetic Error");
+                    }
                     stack.push(std::pow(num2, num1));
                 }
             }
@@ -192,7 +201,7 @@ double evaluatePostfix(const string &postfix)
     }
     if (stack.isEmpty())
     {
-        throw std::runtime_error("invalid expression\n");
+        throw std::runtime_error("Invalid Expression\n");
     }
     return stack.pop();
 }
